@@ -1,0 +1,34 @@
+{
+    "name": "cpr",
+    "description": "cp -R",
+    "author": "Dav Glass <davglass@gmail.com>",
+    "version": "0.0.1",
+    "dependencies": {
+        "graceful-fs": "~1.1.14",
+        "rimraf": "~2.0.2",
+        "mkdirp": "~0.3.4"
+    },
+    "main": "./lib/index.js",
+    "devDependencies": {
+        "yui-lint": "~0.1.0",
+        "vows": "*" 
+    },
+    "keywords": [
+        "copy", "recursive"
+    ],
+    "scripts": {
+        "pretest": "jshint --config ./node_modules/yui-lint/jshint.json ./lib/*.js",
+        "test": "vows --spec ./tests/*.js"
+    },
+    "bugs": { "url" : "http://github.com/davglass/cpr/issues" },
+    "licenses":[
+        {
+            "type" : "BSD",
+            "url" : "https://github.com/davglass/cpr/blob/master/LICENSE"
+        }
+    ],
+    "repository": {
+        "type":"git",
+        "url":"http://github.com/davglass/cpr.git"
+    }
+}

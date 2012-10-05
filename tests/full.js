@@ -34,9 +34,11 @@ var tests = {
                     self.callback(err, t);
                 });
             },
-            'has ./out': function(topic) {
+            'has ./out/0': function(topic) {
                 var stat = fs.statSync(this.outDir);
                 assert.ok(stat.isDirectory());
+            },
+            'and dirs are equal': function(topic) {
                 assert.deepEqual(topic.dirs.to, topic.dirs.from);
             },
             'and from directory has graceful-fs dir': function(topic) {
@@ -70,9 +72,12 @@ var tests = {
                     });
                 });
             },
-            'has ./out': function(topic) {
-                assert.ok(topic.err); //Should be an error
+            'does not have ./out/1': function(topic) {
                 assert.ok(topic.stat); //Should be an error
+            },
+            'and threw an error': function(topic) {
+                assert.ok(topic.err); //Should be an error
+                assert.equal(topic.err, 'no files to copy');
             }
         },
         'and should not copy yui-lint from regex': {
@@ -94,7 +99,7 @@ var tests = {
                     self.callback(err, t);
                 });
             },
-            'and has ./out': function(topic) {
+            'and has ./out/2': function(topic) {
                 var stat = fs.statSync(this.outDir);
                 assert.ok(stat.isDirectory());
             },
@@ -135,7 +140,7 @@ var tests = {
                     self.callback(err, t);
                 });
             },
-            'and has ./out': function(topic) {
+            'and has ./out/3': function(topic) {
                 var stat = fs.statSync(this.outDir);
                 assert.ok(stat.isDirectory());
             },
@@ -158,4 +163,4 @@ var tests = {
     }
 };
 
-vows.describe('full').addBatch(tests).export(module);
+vows.describe('CPR Tests').addBatch(tests).export(module);

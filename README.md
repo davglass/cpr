@@ -13,6 +13,11 @@ Install
     npm install cpr
 
 
+Build Status
+------------
+
+[![Build Status](https://secure.travis-ci.org/davglass/cpr.png)](http://travis-ci.org/davglass/cpr)
+
 Usage
 -----
 

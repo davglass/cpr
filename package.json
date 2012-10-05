@@ -10,6 +10,7 @@
     },
     "main": "./lib/index.js",
     "devDependencies": {
+        "jshint": "~0.9.1",
         "yui-lint": "~0.1.0",
         "vows": "*" 
     },

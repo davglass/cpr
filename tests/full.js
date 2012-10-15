@@ -87,6 +87,8 @@ var tests = {
 
                 this.outDir = out;
                 cpr.cpr(from, out, {
+                    confirm: true,
+                    overwrite: true,
                     filter: /yui-lint/
                 }, function(err, status) {
                     var t = {
@@ -126,6 +128,8 @@ var tests = {
 
                 this.outDir = out;
                 cpr.cpr(from, out, {
+                    confirm: true,
+                    deleteFirst: true,
                     filter: function (item) {
                         return !(/graceful-fs/.test(item));
                     }
@@ -159,6 +163,65 @@ var tests = {
                 });
                 assert.isFalse(toHasGFS);
             }
+        },
+        'and should copy node_modules with overwrite flag': {
+            topic: function() {
+                var out = path.join(to, '4'),
+                    self = this;
+
+                this.outDir = out;
+
+                cpr.cpr(from, out, function() {
+                    cpr.cpr(from, out, {
+                        overwrite: true,
+                        confirm: true
+                    }, function(err, status) {
+                        var t = {
+                            status: status,
+                            dirs: {
+                                from: fs.readdirSync(from).sort(),
+                                to: fs.readdirSync(out).sort()
+                            }
+                        };
+                        self.callback(err, t);
+                    });
+                });
+            },
+            'has ./out/0': function(topic) {
+                var stat = fs.statSync(this.outDir);
+                assert.ok(stat.isDirectory());
+            },
+            'and dirs are equal': function(topic) {
+                assert.deepEqual(topic.dirs.to, topic.dirs.from);
+            },
+            'and from directory has graceful-fs dir': function(topic) {
+                var fromHasGFS = topic.dirs.from.some(function(item) {
+                    return (item === 'graceful-fs');
+                });
+                assert.isTrue(fromHasGFS);
+            },
+            'and to directory has graceful-fs dir': function(topic) {
+                var toHasGFS = topic.dirs.to.some(function(item) {
+                    return (item === 'graceful-fs');
+                });
+                assert.isTrue(toHasGFS);
+            }
+        },
+    },
+    "should fail on non-existant from dir": {
+        topic: function() {
+            var self = this;
+            cpr.cpr('./does/not/exist', path.join(to, 'does/not/matter'), function(err, status) {
+                self.callback(null, {
+                    err: err,
+                    status: status
+                });
+            });
+        },
+        "should return an error in the callback": function(topic) {
+            assert.isUndefined(topic.status);
+            assert.ok(topic.err);
+            assert.equal('From should be a directory', topic.err);
         }
     }
 };

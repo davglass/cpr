@@ -12,6 +12,7 @@
     "devDependencies": {
         "jshint": "~0.9.1",
         "yui-lint": "~0.1.0",
+        "istanbul": "https://github.com/gotwarlost/istanbul/tarball/textreport",
         "vows": "*" 
     },
     "keywords": [
@@ -19,7 +20,7 @@
     ],
     "scripts": {
         "pretest": "jshint --config ./node_modules/yui-lint/jshint.json ./lib/*.js",
-        "test": "vows --spec ./tests/*.js"
+        "test": "istanbul cover --console both -- vows --spec ./tests/*.js"
     },
     "bugs": { "url" : "http://github.com/davglass/cpr/issues" },
     "licenses":[

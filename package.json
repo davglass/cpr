@@ -19,8 +19,9 @@
         "copy", "recursive"
     ],
     "scripts": {
-        "pretest": "jshint --config ./node_modules/yui-lint/jshint.json ./lib/*.js",
-        "test": "istanbul cover --print both -- vows --spec ./tests/*.js"
+        "pretest": "jshint --config ./node_modules/yui-lint/jshint.json ./lib/",
+	"windows-test": "vows --spec ./tests/full.js",
+        "test": "istanbul cover --print both -- vows --spec ./tests/full.js"
     },
     "bugs": { "url" : "http://github.com/davglass/cpr/issues" },
     "licenses":[

@@ -223,6 +223,22 @@ var tests = {
             assert.ok(topic.err);
             assert.equal('From should be a directory', topic.err);
         }
+    },
+    "should fail on from not a dir": {
+        topic: function() {
+            var self = this;
+            cpr.cpr(__filename, path.join(to, 'does/not/matter'), function(err, status) {
+                self.callback(null, {
+                    err: err,
+                    status: status
+                });
+            });
+        },
+        "should return an error in the callback": function(topic) {
+            assert.isUndefined(topic.status);
+            assert.ok(topic.err);
+            assert.equal('From should be a directory', topic.err);
+        }
     }
 };
 

@@ -121,7 +121,7 @@ var tests = {
                 assert.isFalse(toHasLint);
             }
         },
-        'and should not copy graceful-fs from function': {
+        'and should not copy minimatch from function': {
             topic: function() {
                 var out = path.join(to, '3'),
                     self = this;
@@ -131,14 +131,14 @@ var tests = {
                     confirm: true,
                     deleteFirst: true,
                     filter: function (item) {
-                        return !(/graceful-fs/.test(item));
+                        return !(/minimatch/.test(item));
                     }
                 }, function(err, status) {
                     var t = {
                         status: status,
                         dirs: {
-                            from: fs.readdirSync(from).sort(),
-                            to: fs.readdirSync(out).sort()
+                            from: fs.readdirSync(path.join(from, 'jshint/node_modules')).sort(),
+                            to: fs.readdirSync(path.join(out, 'jshint/node_modules')).sort()
                         }
                     };
                     self.callback(err, t);
@@ -151,15 +151,15 @@ var tests = {
             'and dirs are not equal': function(topic) {
                 assert.notDeepEqual(topic.dirs.to, topic.dirs.from);
             },
-            'and from directory has graceful-fs dir': function(topic) {
+            'and from directory has minimatch dir': function(topic) {
                 var fromHasGFS = topic.dirs.from.some(function(item) {
-                    return (item === 'graceful-fs');
+                    return (item === 'minimatch');
                 });
                 assert.isTrue(fromHasGFS);
             },
-            'and to directory does not have graceful-fs dir': function(topic) {
+            'and to directory does not have minimatch dir': function(topic) {
                 var toHasGFS = topic.dirs.to.some(function(item) {
-                    return (item === 'graceful-fs');
+                    return (item === 'minimatch');
                 });
                 assert.isFalse(toHasGFS);
             }

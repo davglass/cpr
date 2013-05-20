@@ -21,7 +21,7 @@ Build Status
 Usage
 -----
 
-    var cpr = require('cpr').cpr;
+    var cpr = require('cpr');
 
     cpr('/path/from', '/path/to', {
         deleteFirst: true, //Delete "to" before

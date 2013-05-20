@@ -14,8 +14,8 @@ var tests = {
             rimraf.sync(to);
             return cpr;
         },
-        'should have cpr method': function (topic) {
-            assert.isFunction(topic.cpr);
+        'should export method': function (topic) {
+            assert.isFunction(topic);
         },
         'and should copy node_modules': {
             topic: function() {
@@ -23,7 +23,7 @@ var tests = {
                     self = this;
 
                 this.outDir = out;
-                cpr.cpr(from, out, function(err, status) {
+                cpr(from, out, function(err, status) {
                     var t = {
                         status: status,
                         dirs: {
@@ -60,7 +60,7 @@ var tests = {
                     self = this;
 
                 this.outDir = out;
-                cpr.cpr(from, out, {
+                cpr(from, out, {
                     filter: /node_modules/
                 }, function(err) {
                     fs.stat(out, function(e, stat) {
@@ -86,7 +86,7 @@ var tests = {
                     self = this;
 
                 this.outDir = out;
-                cpr.cpr(from, out, {
+                cpr(from, out, {
                     confirm: true,
                     overwrite: true,
                     filter: /yui-lint/
@@ -127,7 +127,7 @@ var tests = {
                     self = this;
 
                 this.outDir = out;
-                cpr.cpr(from, out, {
+                cpr(from, out, {
                     confirm: true,
                     deleteFirst: true,
                     filter: function (item) {
@@ -171,8 +171,8 @@ var tests = {
 
                 this.outDir = out;
 
-                cpr.cpr(from, out, function() {
-                    cpr.cpr(from, out, {
+                cpr(from, out, function() {
+                    cpr(from, out, {
                         overwrite: true,
                         confirm: true
                     }, function(err, status) {
@@ -211,7 +211,7 @@ var tests = {
     "should fail on non-existant from dir": {
         topic: function() {
             var self = this;
-            cpr.cpr('./does/not/exist', path.join(to, 'does/not/matter'), function(err, status) {
+            cpr('./does/not/exist', path.join(to, 'does/not/matter'), function(err, status) {
                 self.callback(null, {
                     err: err,
                     status: status
@@ -227,7 +227,7 @@ var tests = {
     "should fail on from not a dir": {
         topic: function() {
             var self = this;
-            cpr.cpr(__filename, path.join(to, 'does/not/matter'), function(err, status) {
+            cpr(__filename, path.join(to, 'does/not/matter'), function(err, status) {
                 self.callback(null, {
                     err: err,
                     status: status

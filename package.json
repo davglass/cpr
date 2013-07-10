@@ -2,7 +2,7 @@
     "name": "cpr",
     "description": "cp -R",
     "author": "Dav Glass <davglass@gmail.com>",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "dependencies": {
         "graceful-fs": "~1.2.0",
         "rimraf": "~2.0.2",
@@ -15,12 +15,15 @@
         "istanbul": "~0.1.8",
         "vows": "*" 
     },
+    "contributors": [
+        { "name": "Elijah Insua", "email": "tmpvar@gmail.com" }
+    ],
     "keywords": [
-        "copy", "recursive"
+        "copy", "recursive", "cp -r", "cp"
     ],
     "scripts": {
         "pretest": "jshint --config ./node_modules/yui-lint/jshint.json ./lib/",
-	"windows-test": "vows --spec ./tests/full.js",
+	    "windows-test": "vows --spec ./tests/full.js",
         "test": "istanbul cover --print both -- vows --spec ./tests/full.js"
     },
     "bugs": { "url" : "http://github.com/davglass/cpr/issues" },

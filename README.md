@@ -22,6 +22,8 @@ Usage
 -----
 
     var cpr = require('cpr');
+    //or
+    var cpr = require('cpr').cpr; //Back compat
 
     cpr('/path/from', '/path/to', {
         deleteFirst: true, //Delete "to" before

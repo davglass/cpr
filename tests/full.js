@@ -14,8 +14,11 @@ var tests = {
             rimraf.sync(to);
             return cpr;
         },
-        'should export method': function (topic) {
+        'should export raw method': function (topic) {
             assert.isFunction(topic);
+        },
+        'and should export cpr method too': function (topic) {
+            assert.isFunction(topic.cpr);
         },
         'and should copy node_modules': {
             topic: function() {

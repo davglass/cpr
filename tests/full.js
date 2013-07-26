@@ -20,6 +20,9 @@ var tests = {
         'and should export cpr method too': function (topic) {
             assert.isFunction(topic.cpr);
         },
+        'and should export a synchronous implementation': function (topic) {
+            assert.isFunction(topic.sync);
+        },
         'and should copy node_modules': {
             topic: function() {
                 var out = path.join(to, '0'),
@@ -241,6 +244,31 @@ var tests = {
             assert.isUndefined(topic.status);
             assert.ok(topic.err);
             assert.equal('From should be a directory', topic.err);
+        }
+    },
+    'cpr.sync should synchronously copy node_modules': {
+        topic: function () {
+            var out = path.join(to, 'sync-0');
+
+            try {
+                cpr.sync(from, out);
+            } catch (err) {
+                return this.callback(err);
+            }
+
+            this.callback(null, out);
+        },
+        'should not error': function (err, dir) {
+            assert.ifError(err);
+        },
+        'should create the node_modules directory': function (err, dir) {
+            assert.ok(fs.existsSync(dir));
+        },
+        'should create equal directories': function (err, dir) {
+            var expected = fs.readdirSync(from);
+            var actual = fs.readdirSync(dir);
+
+            assert.deepEqual(actual, expected);
         }
     }
 };

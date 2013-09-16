@@ -21,24 +21,25 @@ Build Status
 Usage
 -----
 
-    var cpr = require('cpr');
-    //or
-    var cpr = require('cpr').cpr; //Back compat
+```js
+var cpr = require('cpr');
+//or
+var cpr = require('cpr').cpr; //Back compat
 
-    cpr('/path/from', '/path/to', {
-        deleteFirst: true, //Delete "to" before
-        overwrite: true, //If the file exists, overwrite it
-        confirm: true //After the copy, stat all the copied files to make sure they are there
-    }, function(errs, files) {
-        //errs - Array of errors that occurred
-        //files - List of files that we copied
-    });
+cpr('/path/from', '/path/to', {
+    deleteFirst: true, //Delete "to" before
+    overwrite: true, //If the file exists, overwrite it
+    confirm: true //After the copy, stat all the copied files to make sure they are there
+}, function(errs, files) {
+    //errs - Array of errors that occurred
+    //files - List of files that we copied
+});
 
-    cpr('/path/from', '/path/to', function(errs, files) {
-        //errs - Array of errors that occurred
-        //files - List of files that we copied
-    });
-
+cpr('/path/from', '/path/to', function(errs, files) {
+    //errs - Array of errors that occurred
+    //files - List of files that we copied
+});
+```
 
 Options
 -------

@@ -6,14 +6,15 @@
     "dependencies": {
         "graceful-fs": "~1.2.0",
         "rimraf": "~2.0.2",
-        "mkdirp": "~0.3.4"
+        "mkdirp": "~0.3.4",
+        "cp": "~0.1.1"
     },
     "main": "./lib/index.js",
     "devDependencies": {
         "jshint": "~0.9.1",
         "yui-lint": "~0.1.0",
         "istanbul": "~0.1.8",
-        "vows": "*" 
+        "vows": "*"
     },
     "contributors": [
         { "name": "Elijah Insua", "email": "tmpvar@gmail.com" }

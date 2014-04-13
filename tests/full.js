@@ -76,11 +76,11 @@ var tests = {
                 });
             },
             'does not have ./out/1': function(topic) {
-                assert.ok(topic.stat); //Should be an error
+                assert.ok(topic.stat); // Should be an error
             },
             'and threw an error': function(topic) {
-                assert.ok(topic.err); //Should be an error
-                assert.equal(topic.err, 'no files to copy');
+                assert(topic.err instanceof Error); // Should be an error
+                assert.equal(topic.err.message, 'No files to copy');
             }
         },
         'and should not copy yui-lint from regex': {
@@ -223,8 +223,8 @@ var tests = {
         },
         "should return an error in the callback": function(topic) {
             assert.isUndefined(topic.status);
-            assert.ok(topic.err);
-            assert.equal('From should be a directory', topic.err);
+            assert(topic.err instanceof Error);
+            assert.equal('From should be a directory', topic.err.message);
         }
     },
     "should fail on from not a dir": {
@@ -239,8 +239,8 @@ var tests = {
         },
         "should return an error in the callback": function(topic) {
             assert.isUndefined(topic.status);
-            assert.ok(topic.err);
-            assert.equal('From should be a directory', topic.err);
+            assert(topic.err instanceof Error);
+            assert.equal('From should be a directory', topic.err.message);
         }
     }
 };

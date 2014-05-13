@@ -1,40 +1,48 @@
 {
-    "name": "cpr",
-    "description": "cp -R",
-    "author": "Dav Glass <davglass@gmail.com>",
-    "version": "0.1.1",
-    "dependencies": {
-        "graceful-fs": "~1.2.0",
-        "rimraf": "~2.0.2",
-        "mkdirp": "~0.3.4"
-    },
-    "main": "./lib/index.js",
-    "devDependencies": {
-        "jshint": "~0.9.1",
-        "yui-lint": "~0.1.0",
-        "istanbul": "~0.1.8",
-        "vows": "*" 
-    },
-    "contributors": [
-        { "name": "Elijah Insua", "email": "tmpvar@gmail.com" }
-    ],
-    "keywords": [
-        "copy", "recursive", "cp -r", "cp"
-    ],
-    "scripts": {
-        "pretest": "jshint --config ./node_modules/yui-lint/jshint.json ./lib/",
-	    "windows-test": "vows --spec ./tests/full.js",
-        "test": "istanbul cover --print both -- vows --spec ./tests/full.js"
-    },
-    "bugs": { "url" : "http://github.com/davglass/cpr/issues" },
-    "licenses":[
-        {
-            "type" : "BSD",
-            "url" : "https://github.com/davglass/cpr/blob/master/LICENSE"
-        }
-    ],
-    "repository": {
-        "type":"git",
-        "url":"http://github.com/davglass/cpr.git"
+  "name": "cpr",
+  "description": "cp -R",
+  "author": "Dav Glass <davglass@gmail.com>",
+  "version": "0.1.1",
+  "dependencies": {
+    "graceful-fs": "~1.2.0",
+    "rimraf": "~2.0.2",
+    "mkdirp": "~0.3.4"
+  },
+  "main": "./lib/index.js",
+  "devDependencies": {
+    "istanbul": "^0.2.9",
+    "jshint": "~0.9.1",
+    "vows": "*",
+    "yui-lint": "~0.1.0"
+  },
+  "contributors": [
+    {
+      "name": "Elijah Insua",
+      "email": "tmpvar@gmail.com"
     }
+  ],
+  "keywords": [
+    "copy",
+    "recursive",
+    "cp -r",
+    "cp"
+  ],
+  "scripts": {
+    "pretest": "jshint --config ./node_modules/yui-lint/jshint.json ./lib/",
+    "windows-test": "vows --spec ./tests/full.js",
+    "test": "istanbul cover --print both -- vows --spec ./tests/full.js"
+  },
+  "bugs": {
+    "url": "http://github.com/davglass/cpr/issues"
+  },
+  "licenses": [
+    {
+      "type": "BSD",
+      "url": "https://github.com/davglass/cpr/blob/master/LICENSE"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/davglass/cpr.git"
+  }
 }

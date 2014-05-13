@@ -2,7 +2,7 @@
   "name": "cpr",
   "description": "cp -R",
   "author": "Dav Glass <davglass@gmail.com>",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "dependencies": {
     "graceful-fs": "~1.2.0",
     "rimraf": "~2.0.2",

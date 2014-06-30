@@ -167,6 +167,47 @@ var tests = {
                 assert.isFalse(toHasGFS);
             }
         },
+        'and should copy minimatch from bad filter': {
+            topic: function() {
+                var out = path.join(to, '4'),
+                    self = this;
+
+                this.outDir = out;
+                cpr(from, out, {
+                    confirm: true,
+                    deleteFirst: true,
+                    filter: 'bs content'
+                }, function(err, status) {
+                    var t = {
+                        status: status,
+                        dirs: {
+                            from: fs.readdirSync(path.join(from, 'jshint/node_modules')).sort(),
+                            to: fs.readdirSync(path.join(out, 'jshint/node_modules')).sort()
+                        }
+                    };
+                    self.callback(err, t);
+                });
+            },
+            'and has ./out/4': function(topic) {
+                var stat = fs.statSync(this.outDir);
+                assert.ok(stat.isDirectory());
+            },
+            'and dirs are not equal': function(topic) {
+                assert.deepEqual(topic.dirs.to, topic.dirs.from);
+            },
+            'and from directory has minimatch dir': function(topic) {
+                var fromHasGFS = topic.dirs.from.some(function(item) {
+                    return (item === 'minimatch');
+                });
+                assert.isTrue(fromHasGFS);
+            },
+            'and to directory does have minimatch dir': function(topic) {
+                var toHasGFS = topic.dirs.to.some(function(item) {
+                    return (item === 'minimatch');
+                });
+                assert.isTrue(toHasGFS);
+            }
+        },
         'and should copy node_modules with overwrite flag': {
             topic: function() {
                 var out = path.join(to, '4'),
@@ -224,13 +265,13 @@ var tests = {
         "should return an error in the callback": function(topic) {
             assert.isUndefined(topic.status);
             assert(topic.err instanceof Error);
-            assert.equal('From should be a directory', topic.err.message);
+            assert.equal('From should be a file or directory', topic.err.message);
         }
     },
-    "should fail on from not a dir": {
+    "should fail on non-file": {
         topic: function() {
             var self = this;
-            cpr(__filename, path.join(to, 'does/not/matter'), function(err, status) {
+            cpr('/dev/null', path.join(to, 'does/not/matter'), function(err, status) {
                 self.callback(null, {
                     err: err,
                     status: status
@@ -240,8 +281,20 @@ var tests = {
         "should return an error in the callback": function(topic) {
             assert.isUndefined(topic.status);
             assert(topic.err instanceof Error);
-            assert.equal('From should be a directory', topic.err.message);
+            assert.equal('From should be a file or directory', topic.err.message);
         }
+    },
+    "should copy one file": {
+        topic: function() {
+            cpr(__filename, path.join(to, 'one-file-test/'), this.callback);
+        },
+        "should copy one file": function(topic) {
+            assert.isUndefined(topic);
+        },
+        'has ./out/one-file-test/full.js': function(topic) {
+            var stat = fs.statSync(path.join(to, 'one-file-test/full.js'));
+            assert.ok(stat.isFile());
+        },
     }
 };
 

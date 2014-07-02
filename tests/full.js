@@ -104,6 +104,10 @@ var tests = {
                     self.callback(err, t);
                 });
             },
+            'returns files array with confirm': function(topic) {
+                assert.isArray(topic.status);
+                assert.ok(topic.status.length > 0);
+            },
             'and has ./out/2': function(topic) {
                 var stat = fs.statSync(this.outDir);
                 assert.ok(stat.isDirectory());
@@ -230,6 +234,10 @@ var tests = {
                         self.callback(err, t);
                     });
                 });
+            },
+            'should return files array': function(topic) {
+                assert.isArray(topic.status);
+                assert.ok(topic.status.length > 0);
             },
             'has ./out/0': function(topic) {
                 var stat = fs.statSync(this.outDir);

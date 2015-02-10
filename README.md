@@ -55,3 +55,6 @@ Filtering
 
 If you give it a `RegExp`, it will use that to `test` the filename as they are being gathered. If it passes, it will be removed.
 If you give it a `function`, it will use that with `Array.filter` on the list of files.
+
+
+![cpr](../master/cpr.jpg?raw=true)

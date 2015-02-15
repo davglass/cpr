@@ -292,6 +292,17 @@ var tests = {
             assert.equal('From should be a file or directory', topic.err.message);
         }
     },
+    "should copy empty directory": {
+        topic: function() {
+            var mkdirp = require('mkdirp');
+            mkdirp.sync(path.join(to, 'empty-src'));
+            cpr(path.join(to, 'empty-src'), path.join(to, 'empty-dest'), this.callback);
+        },
+        'has ./out/empty-dest': function(topic) {
+            var stat = fs.statSync(path.join(to, 'empty-dest'));
+            assert.ok(stat.isDirectory());
+        },
+    },
     "should copy one file": {
         topic: function() {
             cpr(__filename, path.join(to, 'one-file-test/'), this.callback);

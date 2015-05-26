@@ -35,12 +35,7 @@
   "bugs": {
     "url": "http://github.com/davglass/cpr/issues"
   },
-  "licenses": [
-    {
-      "type": "BSD",
-      "url": "https://github.com/davglass/cpr/blob/master/LICENSE"
-    }
-  ],
+  "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "http://github.com/davglass/cpr.git"

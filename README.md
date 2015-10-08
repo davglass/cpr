@@ -37,12 +37,15 @@ cpr('/path/from', '/path/to', {
 
 cpr('/path/from', '/path/to', function(err, files) {
     //err - The error if any (err.list might be available with an array of errors for more detailed information)
+    //      In the case of an error, cpr continues to copy files but returns this error object with all of the files that it failed to copy.
     //files - List of files that we copied
 });
 ```
 
 Options
 -------
+
+All options default to `false`.
 
    * `deleteFirst`: Delete the to directory with `rimraf`
    * `overwrite`: If the destination exists, overwrite it

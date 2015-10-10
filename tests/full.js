@@ -305,7 +305,7 @@ var tests = {
     },
     "should copy one file": {
         topic: function() {
-            cpr(__filename, path.join(to, 'one-file-test/'), this.callback);
+            cpr(__filename, path.join(to, 'one-file-test/'), {overwrite: true}, this.callback);
         },
         "should copy one file": function(topic) {
             assert.isUndefined(topic);
@@ -314,7 +314,20 @@ var tests = {
             var stat = fs.statSync(path.join(to, 'one-file-test/full.js'));
             assert.ok(stat.isFile());
         },
-    }
+        "and should not copy because file exists": {
+            topic: function() {
+                var self = this
+                cpr(__filename, path.join(to, 'one-file-test/'), function(err, status) {
+                  self.callback(null, {err: err, status: status});
+                });
+            },
+            "should return an error in the callback": function(topic) {
+                assert.isUndefined(topic.status);
+                assert(topic.err instanceof Error);
+                assert.ok(/^File .* exists$/.test(topic.err.message));
+            }
+        },
+    },
 };
 
 vows.describe('CPR Tests').addBatch(tests).export(module);

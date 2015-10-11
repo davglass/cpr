@@ -16,10 +16,13 @@
     "yui-lint": "~0.1.0"
   },
   "contributors": [
-    {
-      "name": "Elijah Insua",
-      "email": "tmpvar@gmail.com"
-    }
+    "soyuka <soyuka@gmail.com>",
+    "fresheneesz <bitetrudpublic@gmail.com>",
+    "silverwind <me@silverwind.io>",
+    "Peter deHaan <peter@deseloper.com>",
+    "André Cruz <andremiguelcruz@msn.com>",
+    "Brian J Brennan <brianloveswords@gmail.com>",
+    "Elijah Insua <tmpvar@gmail.com>"
   ],
   "keywords": [
     "copy",

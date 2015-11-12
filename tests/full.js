@@ -301,11 +301,48 @@ var tests = {
         'has ./out/empty-dest': function(topic) {
             var stat = fs.statSync(path.join(to, 'empty-dest'));
             assert.ok(stat.isDirectory());
+        }
+    },
+    "should not delete existing folders in out dir": {
+        topic: function() {
+            var mkdirp = require('mkdirp');
+            mkdirp.sync(path.join(to, 'empty-src', 'a'));
+            mkdirp.sync(path.join(to, 'empty-dest', 'b'));
+            cpr(path.join(to, 'empty-src'), path.join(to, 'empty-dest'), { overwrite: true }, this.callback);
         },
+        'has ./out/empty-dest': function(topic) {
+            var stat = fs.statSync(path.join(to, 'empty-dest'));
+            assert.ok(stat.isDirectory());
+            var dirs = fs.readdirSync(path.join(to, 'empty-dest'));
+            assert.equal(dirs[0], 'a');
+            assert.equal(dirs[1], 'b');
+        }
+    },
+    "should return an error if a directory is to write over an existing file with the same name": {
+        topic: function() {
+            var mkdirp = require('mkdirp');
+            mkdirp.sync(path.join(to, 'empty-src2', 'a'));
+            mkdirp.sync(path.join(to, 'empty-dest2'));
+            fs.writeFileSync(path.join(to, 'empty-dest2', 'a'), 'FILE');
+            cpr(path.join(to, 'empty-src2'), path.join(to, 'empty-dest2'), { overwrite: true }, function(e, d) {
+                this.callback(null, {
+                    errs: e,
+                    data: d
+                });
+            }.bind(this));
+        },
+        'has ./out/empty-dest': function(topic) {
+            var stat = fs.statSync(path.join(to, 'empty-dest2'));
+            assert.ok(stat.isDirectory());
+            assert.ok(topic.errs);
+            assert.ok(topic.errs.list);
+            assert.ok(topic.errs.list[0]);
+            assert.ok(topic.errs.list[0].message.match(/exists and is not a directory, can not create/));
+        }
     },
     "should copy one file": {
         topic: function() {
-            cpr(__filename, path.join(to, 'one-file-test/'), {overwrite: true}, this.callback);
+            cpr(__filename, path.join(to, 'one-file-test/'), { overwrite: true }, this.callback);
         },
         "should copy one file": function(topic) {
             assert.isUndefined(topic);
@@ -326,8 +363,8 @@ var tests = {
                 assert(topic.err instanceof Error);
                 assert.ok(/^File .* exists$/.test(topic.err.message));
             }
-        },
-    },
+        }
+    }
 };
 
 vows.describe('CPR Tests').addBatch(tests).export(module);

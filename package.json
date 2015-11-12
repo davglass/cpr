@@ -10,10 +10,10 @@
   },
   "main": "./lib/index.js",
   "devDependencies": {
-    "istanbul": "~0.3.5",
-    "jshint": "~0.9.1",
+    "istanbul": "~0.4.0",
+    "jshint": "~2.8.0",
     "vows": "~0.8.1",
-    "yui-lint": "~0.1.0"
+    "yui-lint": "~0.2.0"
   },
   "contributors": [
     "soyuka <soyuka@gmail.com>",
@@ -33,7 +33,8 @@
   "scripts": {
     "pretest": "jshint --config ./node_modules/yui-lint/jshint.json ./lib/",
     "windows-test": "vows --spec ./tests/full.js",
-    "test": "istanbul cover --print both -- vows --spec ./tests/full.js"
+    "test": "istanbul cover --print both -- vows --spec ./tests/full.js",
+    "posttest": "istanbul check-coverage --statement 98 --branch 95 --function 95 --line 98"
   },
   "bugs": {
     "url": "http://github.com/davglass/cpr/issues"

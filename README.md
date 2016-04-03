@@ -60,4 +60,10 @@ If you give it a `RegExp`, it will use that to `test` the filename as they are b
 If you give it a `function`, it will use that with `Array.filter` on the list of files.
 
 
+CLI
+---
+
+`cpr` can also be used from the command line which is useful for cross platform support.
+
+
 ![cpr](../master/cpr.jpg?raw=true)

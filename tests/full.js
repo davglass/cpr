@@ -4,6 +4,7 @@ var vows = require('vows'),
     fs = require('fs'),
     rimraf = require('rimraf'),
     cpr = require('../lib'),
+    exec = require('child_process').exec,
     to = path.join(__dirname, './out/'),
     from = path.join(__dirname, '../node_modules');
 
@@ -362,6 +363,44 @@ var tests = {
                 assert.isUndefined(topic.status);
                 assert(topic.err instanceof Error);
                 assert.ok(/^File .* exists$/.test(topic.err.message));
+            }
+        }
+    },
+    "should work as a standalone bin": {
+        "and should copy node_modules": {
+            topic: function() {
+                var out = path.join(to, '4'),
+                    self = this;
+
+                this.outDir = out;
+                exec('node ./bin/cpr ' + from + ' ' + out, function(err) {
+                  var t = {
+                      dirs: {
+                          from: fs.readdirSync(from).sort(),
+                          to: fs.readdirSync(out).sort()
+                      }
+                  };
+                  self.callback(err, t);
+                });
+            },
+            'has ./out/4': function(topic) {
+                var stat = fs.statSync(this.outDir);
+                assert.ok(stat.isDirectory());
+            },
+            'and dirs are equal': function(topic) {
+                assert.deepEqual(topic.dirs.to, topic.dirs.from);
+            },
+            'and from directory has graceful-fs dir': function(topic) {
+                var fromHasGFS = topic.dirs.from.some(function(item) {
+                    return (item === 'graceful-fs');
+                });
+                assert.isTrue(fromHasGFS);
+            },
+            'and to directory has graceful-fs dir': function(topic) {
+                var toHasGFS = topic.dirs.to.some(function(item) {
+                    return (item === 'graceful-fs');
+                });
+                assert.isTrue(toHasGFS);
             }
         }
     }

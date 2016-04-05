@@ -1,409 +1,421 @@
-var vows = require('vows'),
-    assert = require('assert'),
+var assert = require('assert'),
     path = require('path'),
     fs = require('fs'),
     rimraf = require('rimraf'),
+    mkdirp = require('mkdirp'),
     cpr = require('../lib'),
     exec = require('child_process').exec,
     to = path.join(__dirname, './out/'),
     from = path.join(__dirname, '../node_modules');
 
+assert.isTrue = function(v) {
+    assert(v === true);
+};
 
-var tests = {
-    'should be loaded': {
-        topic: function () {
+assert.isFalse = function(v) {
+    assert(v === false);
+};
+
+assert.isUndefined = function(v) {
+    assert(v === undefined);
+};
+
+
+describe('cpr test suite', function() {
+    this.timeout(55000);
+    
+    describe('loading', function() {
+        before(function() {
             rimraf.sync(to);
-            return cpr;
-        },
-        'should export raw method': function (topic) {
-            assert.isFunction(topic);
-        },
-        'and should export cpr method too': function (topic) {
-            assert.isFunction(topic.cpr);
-        },
-        'and should copy node_modules': {
-            topic: function() {
-                var out = path.join(to, '0'),
-                    self = this;
+        });
+        
+        it('should export raw method', function () {
+            assert.equal(typeof cpr, 'function');
+        });
+        
+        it('should export cpr method too', function () {
+            assert.equal(typeof cpr.cpr, 'function');
+        });
+    });
+    
+    describe('should copy node_modules', function() {
+        var out = path.join(to, '0');
+        var data = {};
+        
+        before(function(done) {
+            cpr(from, out, function(err, status) {
+                data = {
+                    from: fs.readdirSync(from).sort(),
+                    to: fs.readdirSync(out).sort()
+                };
+                done();
+            });
+        });
+            
+        it('has ./out/0', function() {
+            var stat = fs.statSync(out);
+            assert.ok(stat.isDirectory());
+        });
 
-                this.outDir = out;
-                cpr(from, out, function(err, status) {
-                    var t = {
-                        status: status,
-                        dirs: {
-                            from: fs.readdirSync(from).sort(),
-                            to: fs.readdirSync(out).sort()
-                        }
+        it('dirs are equal', function() {
+            assert.deepEqual(data.to, data.from);
+        });
+
+        it('from directory has graceful-fs dir', function() {
+            var fromHasGFS = data.from.some(function(item) {
+                return (item === 'graceful-fs');
+            });
+            assert.isTrue(fromHasGFS);
+        });
+
+        it('to directory has graceful-fs dir', function() {
+            var toHasGFS = data.to.some(function(item) {
+                return (item === 'graceful-fs');
+            });
+            assert.isTrue(toHasGFS);
+        });
+
+    });
+    
+    describe('should NOT copy node_modules', function() {
+        var out = path.join(to, '1'),
+            data;
+
+        before(function(done) {
+            cpr(from, out, {
+                filter: /node_modules/
+            }, function(err) {
+                fs.stat(out, function(e, stat) {
+                    data = {
+                        err: err,
+                        stat: e
                     };
-                    self.callback(err, t);
+                    done();
                 });
-            },
-            'has ./out/0': function(topic) {
-                var stat = fs.statSync(this.outDir);
-                assert.ok(stat.isDirectory());
-            },
-            'and dirs are equal': function(topic) {
-                assert.deepEqual(topic.dirs.to, topic.dirs.from);
-            },
-            'and from directory has graceful-fs dir': function(topic) {
-                var fromHasGFS = topic.dirs.from.some(function(item) {
-                    return (item === 'graceful-fs');
-                });
-                assert.isTrue(fromHasGFS);
-            },
-            'and to directory has graceful-fs dir': function(topic) {
-                var toHasGFS = topic.dirs.to.some(function(item) {
-                    return (item === 'graceful-fs');
-                });
-                assert.isTrue(toHasGFS);
-            }
-        },
-        'and should NOT copy node_modules': {
-            topic: function() {
-                var out = path.join(to, '1'),
-                    self = this;
+            });
+        });
+        
+        it('does not have ./out/1', function() {
+            assert.ok(data.stat); // Should be an error
+        });
+        it('threw an error', function() {
+            assert(data.err instanceof Error); // Should be an error
+            assert.equal(data.err.message, 'No files to copy');
+        });
+    
+    });
 
-                this.outDir = out;
-                cpr(from, out, {
-                    filter: /node_modules/
-                }, function(err) {
-                    fs.stat(out, function(e, stat) {
-                        var t = {
-                            err: err,
-                            stat: e
-                        };
-                        self.callback(null, t);
-                    });
-                });
-            },
-            'does not have ./out/1': function(topic) {
-                assert.ok(topic.stat); // Should be an error
-            },
-            'and threw an error': function(topic) {
-                assert(topic.err instanceof Error); // Should be an error
-                assert.equal(topic.err.message, 'No files to copy');
-            }
-        },
-        'and should not copy yui-lint from regex': {
-            topic: function() {
-                var out = path.join(to, '2'),
-                    self = this;
+    describe('should not copy yui-lint from regex', function() {
+        var out = path.join(to, '2'),
+            data;
 
-                this.outDir = out;
-                cpr(from, out, {
-                    confirm: true,
-                    overwrite: true,
-                    filter: /yui-lint/
-                }, function(err, status) {
-                    var t = {
-                        status: status,
-                        dirs: {
-                            from: fs.readdirSync(from).sort(),
-                            to: fs.readdirSync(out).sort()
-                        }
-                    };
-                    self.callback(err, t);
-                });
-            },
-            'returns files array with confirm': function(topic) {
-                assert.isArray(topic.status);
-                assert.ok(topic.status.length > 0);
-            },
-            'and has ./out/2': function(topic) {
-                var stat = fs.statSync(this.outDir);
-                assert.ok(stat.isDirectory());
-            },
-            'and dirs are not equal': function(topic) {
-                assert.notDeepEqual(topic.dirs.to, topic.dirs.from);
-            },
-            'and from directory has yui-lint dir': function(topic) {
-                var fromHasLint = topic.dirs.from.some(function(item) {
-                    return (item === 'yui-lint');
-                });
-                assert.isTrue(fromHasLint);
-            },
-            'and to directory does not have yui-lint dir': function(topic) {
-                var toHasLint = topic.dirs.to.some(function(item) {
-                    return (item === 'yui-lint');
-                });
-                assert.isFalse(toHasLint);
-            }
-        },
-        'and should not copy minimatch from function': {
-            topic: function() {
-                var out = path.join(to, '3'),
-                    self = this;
-
-                this.outDir = out;
-                cpr(from, out, {
-                    confirm: true,
-                    deleteFirst: true,
-                    filter: function (item) {
-                        return !(/minimatch/.test(item));
+        before(function(done) {
+            cpr(from, out, {
+                confirm: true,
+                overwrite: true,
+                filter: /yui-lint/
+            }, function(err, status) {
+                data = {
+                    status: status,
+                    dirs: {
+                        from: fs.readdirSync(from).sort(),
+                        to: fs.readdirSync(out).sort()
                     }
-                }, function(err, status) {
-                    var t = {
-                        status: status,
-                        dirs: {
-                            from: fs.readdirSync(path.join(from, 'jshint/node_modules')).sort(),
-                            to: fs.readdirSync(path.join(out, 'jshint/node_modules')).sort()
-                        }
-                    };
-                    self.callback(err, t);
-                });
-            },
-            'and has ./out/3': function(topic) {
-                var stat = fs.statSync(this.outDir);
-                assert.ok(stat.isDirectory());
-            },
-            'and dirs are not equal': function(topic) {
-                assert.notDeepEqual(topic.dirs.to, topic.dirs.from);
-            },
-            'and from directory has minimatch dir': function(topic) {
-                var fromHasGFS = topic.dirs.from.some(function(item) {
-                    return (item === 'minimatch');
-                });
-                assert.isTrue(fromHasGFS);
-            },
-            'and to directory does not have minimatch dir': function(topic) {
-                var toHasGFS = topic.dirs.to.some(function(item) {
-                    return (item === 'minimatch');
-                });
-                assert.isFalse(toHasGFS);
-            }
-        },
-        'and should copy minimatch from bad filter': {
-            topic: function() {
-                var out = path.join(to, '4'),
-                    self = this;
+                };
+                done();
+            });
+        });
+        
+        it('returns files array with confirm', function() {
+            assert.ok(Array.isArray(data.status));
+            assert.ok(data.status.length > 0);
+        });
+        it('has ./out/2', function() {
+            var stat = fs.statSync(out);
+            assert.ok(stat.isDirectory());
+        });
+        it('dirs are not equal', function() {
+            assert.notDeepEqual(data.dirs.to, data.dirs.from);
+        });
+        it('from directory has yui-lint dir', function() {
+            var fromHasLint = data.dirs.from.some(function(item) {
+                return (item === 'yui-lint');
+            });
+            assert.isTrue(fromHasLint);
+        });
+        it('to directory does not have yui-lint dir', function() {
+            var toHasLint = data.dirs.to.some(function(item) {
+                return (item === 'yui-lint');
+            });
+            assert.isFalse(toHasLint);
+        });
+    });
 
-                this.outDir = out;
+    describe('should not copy minimatch from function', function() {
+        var out = path.join(to, '3'),
+            data;
+
+        before(function(done) {
+            cpr(from, out, {
+                confirm: true,
+                deleteFirst: true,
+                filter: function (item) {
+                    return !(/minimatch/.test(item));
+                }
+            }, function(err, status) {
+                data = {
+                    status: status,
+                    dirs: {
+                        from: fs.readdirSync(path.join(from, 'jshint/node_modules')).sort(),
+                        to: fs.readdirSync(path.join(out, 'jshint/node_modules')).sort()
+                    }
+                };
+                done();
+            });
+        });
+
+        it('has ./out/3', function() {
+            var stat = fs.statSync(out);
+            assert.ok(stat.isDirectory());
+        });
+        it('dirs are not equal', function() {
+            assert.notDeepEqual(data.dirs.to, data.dirs.from);
+        });
+        it('from directory has minimatch dir', function() {
+            var fromHasGFS = data.dirs.from.some(function(item) {
+                return (item === 'minimatch');
+            });
+            assert.isTrue(fromHasGFS);
+        });
+        it('to directory does not have minimatch dir', function() {
+            var toHasGFS = data.dirs.to.some(function(item) {
+                return (item === 'minimatch');
+            });
+            assert.isFalse(toHasGFS);
+        });
+    
+    });
+
+    describe('should copy minimatch from bad filter', function() {
+        var out = path.join(to, '4'),
+            data;
+
+        before(function(done) {
+            cpr(from, out, {
+                confirm: true,
+                deleteFirst: true,
+                filter: 'bs content'
+            }, function(err, status) {
+                data = {
+                    status: status,
+                    dirs: {
+                        from: fs.readdirSync(path.join(from, 'jshint/node_modules')).sort(),
+                        to: fs.readdirSync(path.join(out, 'jshint/node_modules')).sort()
+                    }
+                };
+                done();
+            });
+        });
+        it('has ./out/4', function() {
+            var stat = fs.statSync(out);
+            assert.ok(stat.isDirectory());
+        });
+        it('dirs are not equal', function() {
+            assert.deepEqual(data.dirs.to, data.dirs.from);
+        });
+        it('from directory has minimatch dir', function() {
+            var fromHasGFS = data.dirs.from.some(function(item) {
+                return (item === 'minimatch');
+            });
+            assert.isTrue(fromHasGFS);
+        });
+        it('to directory does have minimatch dir', function() {
+            var toHasGFS = data.dirs.to.some(function(item) {
+                return (item === 'minimatch');
+            });
+            assert.isTrue(toHasGFS);
+        });
+    
+    });
+
+    describe('should copy node_modules with overwrite flag', function() {
+        var out = path.join(to, '4'),
+            data;
+
+        before(function(done) {
+            cpr(from, out, function() {
                 cpr(from, out, {
-                    confirm: true,
-                    deleteFirst: true,
-                    filter: 'bs content'
+                    overwrite: true,
+                    confirm: true
                 }, function(err, status) {
-                    var t = {
+                    data = {
                         status: status,
                         dirs: {
-                            from: fs.readdirSync(path.join(from, 'jshint/node_modules')).sort(),
-                            to: fs.readdirSync(path.join(out, 'jshint/node_modules')).sort()
+                            from: fs.readdirSync(from).sort(),
+                            to: fs.readdirSync(out).sort()
                         }
                     };
-                    self.callback(err, t);
+                    done();
                 });
-            },
-            'and has ./out/4': function(topic) {
-                var stat = fs.statSync(this.outDir);
-                assert.ok(stat.isDirectory());
-            },
-            'and dirs are not equal': function(topic) {
-                assert.deepEqual(topic.dirs.to, topic.dirs.from);
-            },
-            'and from directory has minimatch dir': function(topic) {
-                var fromHasGFS = topic.dirs.from.some(function(item) {
-                    return (item === 'minimatch');
-                });
-                assert.isTrue(fromHasGFS);
-            },
-            'and to directory does have minimatch dir': function(topic) {
-                var toHasGFS = topic.dirs.to.some(function(item) {
-                    return (item === 'minimatch');
-                });
-                assert.isTrue(toHasGFS);
-            }
-        },
-        'and should copy node_modules with overwrite flag': {
-            topic: function() {
-                var out = path.join(to, '4'),
-                    self = this;
+            });
+        });
 
-                this.outDir = out;
+        it('should return files array', function() {
+            assert.ok(Array.isArray(data.status));
+            assert.ok(data.status.length > 0);
+        });
+        it('has ./out/0', function() {
+            var stat = fs.statSync(out);
+            assert.ok(stat.isDirectory());
+        });
+        it('dirs are equal', function() {
+            assert.deepEqual(data.dirs.to, data.dirs.from);
+        });
+        it('from directory has graceful-fs dir', function() {
+            var fromHasGFS = data.dirs.from.some(function(item) {
+                return (item === 'graceful-fs');
+            });
+            assert.isTrue(fromHasGFS);
+        });
+        it('to directory has graceful-fs dir', function() {
+            var toHasGFS = data.dirs.to.some(function(item) {
+                return (item === 'graceful-fs');
+            });
+            assert.isTrue(toHasGFS);
+        });
+    
+    });
 
-                cpr(from, out, function() {
-                    cpr(from, out, {
-                        overwrite: true,
-                        confirm: true
-                    }, function(err, status) {
-                        var t = {
-                            status: status,
-                            dirs: {
-                                from: fs.readdirSync(from).sort(),
-                                to: fs.readdirSync(out).sort()
-                            }
-                        };
-                        self.callback(err, t);
-                    });
-                });
-            },
-            'should return files array': function(topic) {
-                assert.isArray(topic.status);
-                assert.ok(topic.status.length > 0);
-            },
-            'has ./out/0': function(topic) {
-                var stat = fs.statSync(this.outDir);
-                assert.ok(stat.isDirectory());
-            },
-            'and dirs are equal': function(topic) {
-                assert.deepEqual(topic.dirs.to, topic.dirs.from);
-            },
-            'and from directory has graceful-fs dir': function(topic) {
-                var fromHasGFS = topic.dirs.from.some(function(item) {
-                    return (item === 'graceful-fs');
-                });
-                assert.isTrue(fromHasGFS);
-            },
-            'and to directory has graceful-fs dir': function(topic) {
-                var toHasGFS = topic.dirs.to.some(function(item) {
-                    return (item === 'graceful-fs');
-                });
-                assert.isTrue(toHasGFS);
-            }
-        },
-    },
-    "should fail on non-existant from dir": {
-        topic: function() {
-            var self = this;
+    describe('error handling', function() {
+    
+        it('should fail on non-existant from dir', function(done) {
             cpr('./does/not/exist', path.join(to, 'does/not/matter'), function(err, status) {
-                self.callback(null, {
-                    err: err,
-                    status: status
-                });
+                assert.isUndefined(status);
+                assert(err instanceof Error);
+                assert.equal('From should be a file or directory', err.message);
+                done();
             });
-        },
-        "should return an error in the callback": function(topic) {
-            assert.isUndefined(topic.status);
-            assert(topic.err instanceof Error);
-            assert.equal('From should be a file or directory', topic.err.message);
-        }
-    },
-    "should fail on non-file": {
-        topic: function() {
-            var self = this;
+        });
+    
+        it('should fail on non-file', function(done) {
             cpr('/dev/null', path.join(to, 'does/not/matter'), function(err, status) {
-                self.callback(null, {
-                    err: err,
-                    status: status
-                });
+                assert.isUndefined(status);
+                assert(err instanceof Error);
+                assert.equal('From should be a file or directory', err.message);
+                done();
             });
-        },
-        "should return an error in the callback": function(topic) {
-            assert.isUndefined(topic.status);
-            assert(topic.err instanceof Error);
-            assert.equal('From should be a file or directory', topic.err.message);
-        }
-    },
-    "should copy empty directory": {
-        topic: function() {
-            var mkdirp = require('mkdirp');
-            mkdirp.sync(path.join(to, 'empty-src'));
-            cpr(path.join(to, 'empty-src'), path.join(to, 'empty-dest'), this.callback);
-        },
-        'has ./out/empty-dest': function(topic) {
-            var stat = fs.statSync(path.join(to, 'empty-dest'));
-            assert.ok(stat.isDirectory());
-        }
-    },
-    "should not delete existing folders in out dir": {
-        topic: function() {
-            var mkdirp = require('mkdirp');
-            mkdirp.sync(path.join(to, 'empty-src', 'a'));
-            mkdirp.sync(path.join(to, 'empty-dest', 'b'));
-            cpr(path.join(to, 'empty-src'), path.join(to, 'empty-dest'), { overwrite: true }, this.callback);
-        },
-        'has ./out/empty-dest': function(topic) {
-            var stat = fs.statSync(path.join(to, 'empty-dest'));
-            assert.ok(stat.isDirectory());
-            var dirs = fs.readdirSync(path.join(to, 'empty-dest'));
-            assert.equal(dirs[0], 'a');
-            assert.equal(dirs[1], 'b');
-        }
-    },
-    "should return an error if a directory is to write over an existing file with the same name": {
-        topic: function() {
-            var mkdirp = require('mkdirp');
+        });
+
+        it('should return an error if a directory is to write over an existing file with the same name', function(done) {
             mkdirp.sync(path.join(to, 'empty-src2', 'a'));
             mkdirp.sync(path.join(to, 'empty-dest2'));
             fs.writeFileSync(path.join(to, 'empty-dest2', 'a'), 'FILE');
-            cpr(path.join(to, 'empty-src2'), path.join(to, 'empty-dest2'), { overwrite: true }, function(e, d) {
-                this.callback(null, {
-                    errs: e,
-                    data: d
-                });
-            }.bind(this));
-        },
-        'has ./out/empty-dest': function(topic) {
-            var stat = fs.statSync(path.join(to, 'empty-dest2'));
-            assert.ok(stat.isDirectory());
-            assert.ok(topic.errs);
-            assert.ok(topic.errs.list);
-            assert.ok(topic.errs.list[0]);
-            assert.ok(topic.errs.list[0].message.match(/exists and is not a directory, can not create/));
-        }
-    },
-    "should copy one file": {
-        topic: function() {
-            cpr(__filename, path.join(to, 'one-file-test/'), { overwrite: true }, this.callback);
-        },
-        "should copy one file": function(topic) {
-            assert.isUndefined(topic);
-        },
-        'has ./out/one-file-test/full.js': function(topic) {
-            var stat = fs.statSync(path.join(to, 'one-file-test/full.js'));
-            assert.ok(stat.isFile());
-        },
-        "and should not copy because file exists": {
-            topic: function() {
-                var self = this
-                cpr(__filename, path.join(to, 'one-file-test/'), function(err, status) {
-                  self.callback(null, {err: err, status: status});
-                });
-            },
-            "should return an error in the callback": function(topic) {
+            cpr(path.join(to, 'empty-src2'), path.join(to, 'empty-dest2'), { overwrite: true }, function(errs) {
+                var stat = fs.statSync(path.join(to, 'empty-dest2'));
+                assert.ok(stat.isDirectory());
+                assert.ok(errs);
+                assert.ok(errs.list);
+                assert.ok(errs.list[0]);
+                assert.ok(errs.list[0].message.match(/exists and is not a directory, can not create/));
+                done();
+            });
+        });
+
+
+        it.skip('should fail without write permissions', function(done) {
+            var baddir = path.join(to, 'readonly');
+            mkdirp.sync(baddir);
+            fs.chmodSync(baddir, '555');
+            cpr(from, baddir, function(err, status) {
+                console.log('readonly test', arguments);
                 assert.isUndefined(topic.status);
                 assert(topic.err instanceof Error);
-                assert.ok(/^File .* exists$/.test(topic.err.message));
-            }
-        }
-    },
-    "should work as a standalone bin": {
-        "and should copy node_modules": {
-            topic: function() {
-                var out = path.join(to, '4'),
-                    self = this;
+                done();
+            });
+        });
 
-                this.outDir = out;
-                exec('node ./bin/cpr ' + from + ' ' + out, function(err) {
-                  var t = {
-                      dirs: {
-                          from: fs.readdirSync(from).sort(),
-                          to: fs.readdirSync(out).sort()
-                      }
-                  };
-                  self.callback(err, t);
-                });
-            },
-            'has ./out/4': function(topic) {
-                var stat = fs.statSync(this.outDir);
+    });
+
+    describe('validations', function() {
+    
+        it('should copy empty directory', function(done) {
+            mkdirp.sync(path.join(to, 'empty-src'));
+            cpr(path.join(to, 'empty-src'), path.join(to, 'empty-dest'), function() {
+                var stat = fs.statSync(path.join(to, 'empty-dest'));
                 assert.ok(stat.isDirectory());
-            },
-            'and dirs are equal': function(topic) {
-                assert.deepEqual(topic.dirs.to, topic.dirs.from);
-            },
-            'and from directory has graceful-fs dir': function(topic) {
-                var fromHasGFS = topic.dirs.from.some(function(item) {
-                    return (item === 'graceful-fs');
-                });
-                assert.isTrue(fromHasGFS);
-            },
-            'and to directory has graceful-fs dir': function(topic) {
-                var toHasGFS = topic.dirs.to.some(function(item) {
-                    return (item === 'graceful-fs');
-                });
-                assert.isTrue(toHasGFS);
-            }
-        }
-    }
-};
+                done();
+            });
+        });
+    
+        it('should not delete existing folders in out dir', function(done) {
+            mkdirp.sync(path.join(to, 'empty-src', 'a'));
+            mkdirp.sync(path.join(to, 'empty-dest', 'b'));
+            cpr(path.join(to, 'empty-src'), path.join(to, 'empty-dest'), { overwrite: true }, function() {
+                var stat = fs.statSync(path.join(to, 'empty-dest'));
+                assert.ok(stat.isDirectory());
+                var dirs = fs.readdirSync(path.join(to, 'empty-dest'));
+                assert.equal(dirs[0], 'a');
+                assert.equal(dirs[1], 'b');
+                done();
+            });
+        });
+    
+        it('should copy one file', function(done) {
+            cpr(__filename, path.join(to, 'one-file-test/'), { overwrite: true }, function(err) {
+                assert.isUndefined(err);
+                var stat = fs.statSync(path.join(to, 'one-file-test/full.js'));
+                assert.ok(stat.isFile());
+                done();
+            });
+        });
 
-vows.describe('CPR Tests').addBatch(tests).export(module);
+        it('should not copy because file exists', function(done) {
+            cpr(__filename, path.join(to, 'one-file-test/'), function(err, status) {
+                assert.isUndefined(status);
+                assert(err instanceof Error);
+                assert.ok(/^File .* exists$/.test(err.message));
+                done();
+            });
+        });
+
+    });
+
+    describe('should work as a standalone bin', function() {
+        var out = path.join(to, '4'),
+            data;
+
+        before(function(done) {
+            exec('node ./bin/cpr ' + from + ' ' + out, function(err) {
+              data = {
+                  dirs: {
+                      from: fs.readdirSync(from).sort(),
+                      to: fs.readdirSync(out).sort()
+                  }
+              };
+              done();
+            });
+        });
+        
+        it('has ./out/4', function() {
+            var stat = fs.statSync(out);
+            assert.ok(stat.isDirectory());
+        });
+        it('dirs are equal', function() {
+            assert.deepEqual(data.dirs.to, data.dirs.from);
+        });
+        it('from directory has graceful-fs dir', function() {
+            var fromHasGFS = data.dirs.from.some(function(item) {
+                return (item === 'graceful-fs');
+            });
+            assert.isTrue(fromHasGFS);
+        });
+        it('to directory has graceful-fs dir', function() {
+            var toHasGFS = data.dirs.to.some(function(item) {
+                return (item === 'graceful-fs');
+            });
+            assert.isTrue(toHasGFS);
+        });
+    
+    });
+
+});

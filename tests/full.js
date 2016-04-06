@@ -151,7 +151,7 @@ describe('cpr test suite', function() {
         });
     });
 
-    describe('should not copy minimatch from function', function() {
+    describe('should not copy directory from function', function() {
         var out = path.join(to, '3'),
             data;
 
@@ -160,14 +160,14 @@ describe('cpr test suite', function() {
                 confirm: true,
                 deleteFirst: true,
                 filter: function (item) {
-                    return !(/minimatch/.test(item));
+                    return !(/data/.test(item));
                 }
             }, function(err, status) {
                 data = {
                     status: status,
                     dirs: {
-                        from: fs.readdirSync(path.join(from, 'jshint/node_modules')).sort(),
-                        to: fs.readdirSync(path.join(out, 'jshint/node_modules')).sort()
+                        from: fs.readdirSync(path.join(from, 'jshint/')).sort(),
+                        to: fs.readdirSync(path.join(out, 'jshint/')).sort()
                     }
                 };
                 done();
@@ -181,17 +181,17 @@ describe('cpr test suite', function() {
         it('dirs are not equal', function() {
             assert.notDeepEqual(data.dirs.to, data.dirs.from);
         });
-        it('from directory has minimatch dir', function() {
-            var fromHasGFS = data.dirs.from.some(function(item) {
-                return (item === 'minimatch');
+        it('from directory has data dir', function() {
+            var fromHas = data.dirs.from.some(function(item) {
+                return (item === 'data');
             });
-            assert.isTrue(fromHasGFS);
+            assert.isTrue(fromHas);
         });
-        it('to directory does not have minimatch dir', function() {
-            var toHasGFS = data.dirs.to.some(function(item) {
-                return (item === 'minimatch');
+        it('to directory does not have data dir', function() {
+            var toHas = data.dirs.to.some(function(item) {
+                return (item === 'data');
             });
-            assert.isFalse(toHasGFS);
+            assert.isFalse(toHas);
         });
     
     });

@@ -322,14 +322,15 @@ describe('cpr test suite', function() {
         });
 
 
-        it.skip('should fail without write permissions', function(done) {
+        it('should fail without write permissions', function(done) {
             var baddir = path.join(to, 'readonly');
             mkdirp.sync(baddir);
             fs.chmodSync(baddir, '555');
-            cpr(from, baddir, function(err, status) {
-                console.log('readonly test', arguments);
-                assert.isUndefined(topic.status);
-                assert(topic.err instanceof Error);
+            cpr(from, baddir, function(errs, status) {
+                assert.ok(errs);
+                assert.ok(errs.list);
+                assert.ok(errs.list[0]);
+                assert.ok(errs.message.match(/Unable to copy directory entirely/));
                 done();
             });
         });

@@ -8,19 +8,6 @@ var assert = require('assert'),
     to = path.join(__dirname, './out/'),
     from = path.join(__dirname, '../node_modules');
 
-assert.isTrue = function(v) {
-    assert(v === true);
-};
-
-assert.isFalse = function(v) {
-    assert(v === false);
-};
-
-assert.isUndefined = function(v) {
-    assert(v === undefined);
-};
-
-
 describe('cpr test suite', function() {
     this.timeout(55000);
     
@@ -65,14 +52,14 @@ describe('cpr test suite', function() {
             var fromHasGFS = data.from.some(function(item) {
                 return (item === 'graceful-fs');
             });
-            assert.isTrue(fromHasGFS);
+            assert.equal(true, fromHasGFS);
         });
 
         it('to directory has graceful-fs dir', function() {
             var toHasGFS = data.to.some(function(item) {
                 return (item === 'graceful-fs');
             });
-            assert.isTrue(toHasGFS);
+            assert.equal(true, toHasGFS);
         });
 
     });
@@ -141,13 +128,13 @@ describe('cpr test suite', function() {
             var fromHasLint = data.dirs.from.some(function(item) {
                 return (item === 'yui-lint');
             });
-            assert.isTrue(fromHasLint);
+            assert.equal(true, fromHasLint);
         });
         it('to directory does not have yui-lint dir', function() {
             var toHasLint = data.dirs.to.some(function(item) {
                 return (item === 'yui-lint');
             });
-            assert.isFalse(toHasLint);
+            assert.equal(false, toHasLint);
         });
     });
 
@@ -185,13 +172,13 @@ describe('cpr test suite', function() {
             var fromHas = data.dirs.from.some(function(item) {
                 return (item === 'data');
             });
-            assert.isTrue(fromHas);
+            assert.equal(true, fromHas);
         });
         it('to directory does not have data dir', function() {
             var toHas = data.dirs.to.some(function(item) {
                 return (item === 'data');
             });
-            assert.isFalse(toHas);
+            assert.equal(false, toHas);
         });
     
     });
@@ -227,13 +214,13 @@ describe('cpr test suite', function() {
             var fromHasGFS = data.dirs.from.some(function(item) {
                 return (item === 'minimatch');
             });
-            assert.isTrue(fromHasGFS);
+            assert.equal(true, fromHasGFS);
         });
         it('to directory does have minimatch dir', function() {
             var toHasGFS = data.dirs.to.some(function(item) {
                 return (item === 'minimatch');
             });
-            assert.isTrue(toHasGFS);
+            assert.equal(true, toHasGFS);
         });
     
     });
@@ -275,13 +262,13 @@ describe('cpr test suite', function() {
             var fromHasGFS = data.dirs.from.some(function(item) {
                 return (item === 'graceful-fs');
             });
-            assert.isTrue(fromHasGFS);
+            assert.equal(true, fromHasGFS);
         });
         it('to directory has graceful-fs dir', function() {
             var toHasGFS = data.dirs.to.some(function(item) {
                 return (item === 'graceful-fs');
             });
-            assert.isTrue(toHasGFS);
+            assert.equal(true, toHasGFS);
         });
     
     });
@@ -290,7 +277,7 @@ describe('cpr test suite', function() {
     
         it('should fail on non-existant from dir', function(done) {
             cpr('./does/not/exist', path.join(to, 'does/not/matter'), function(err, status) {
-                assert.isUndefined(status);
+                assert.equal(undefined, status);
                 assert(err instanceof Error);
                 assert.equal('From should be a file or directory', err.message);
                 done();
@@ -299,7 +286,7 @@ describe('cpr test suite', function() {
     
         it('should fail on non-file', function(done) {
             cpr('/dev/null', path.join(to, 'does/not/matter'), function(err, status) {
-                assert.isUndefined(status);
+                assert.equal(undefined, status);
                 assert(err instanceof Error);
                 assert.equal('From should be a file or directory', err.message);
                 done();
@@ -363,7 +350,7 @@ describe('cpr test suite', function() {
     
         it('should copy one file', function(done) {
             cpr(__filename, path.join(to, 'one-file-test/'), { overwrite: true }, function(err) {
-                assert.isUndefined(err);
+                assert.equal(undefined, err);
                 var stat = fs.statSync(path.join(to, 'one-file-test/full.js'));
                 assert.ok(stat.isFile());
                 done();
@@ -372,7 +359,7 @@ describe('cpr test suite', function() {
 
         it('should not copy because file exists', function(done) {
             cpr(__filename, path.join(to, 'one-file-test/'), function(err, status) {
-                assert.isUndefined(status);
+                assert.equal(undefined, status);
                 assert(err instanceof Error);
                 assert.ok(/^File .* exists$/.test(err.message));
                 done();
@@ -408,13 +395,13 @@ describe('cpr test suite', function() {
             var fromHasGFS = data.dirs.from.some(function(item) {
                 return (item === 'graceful-fs');
             });
-            assert.isTrue(fromHasGFS);
+            assert.equal(true, fromHasGFS);
         });
         it('to directory has graceful-fs dir', function() {
             var toHasGFS = data.dirs.to.some(function(item) {
                 return (item === 'graceful-fs');
             });
-            assert.isTrue(toHasGFS);
+            assert.equal(true, toHasGFS);
         });
     
     });

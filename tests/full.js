@@ -349,16 +349,16 @@ describe('cpr test suite', function() {
         });
     
         it('should copy one file', function(done) {
-            cpr(__filename, path.join(to, 'one-file-test/'), { overwrite: true }, function(err) {
+            cpr(__filename, path.join(to, 'one-file-test.js'), { overwrite: true }, function(err) {
                 assert.equal(undefined, err);
-                var stat = fs.statSync(path.join(to, 'one-file-test/full.js'));
+                var stat = fs.statSync(path.join(to, 'one-file-test.js'));
                 assert.ok(stat.isFile());
                 done();
             });
         });
 
         it('should not copy because file exists', function(done) {
-            cpr(__filename, path.join(to, 'one-file-test/'), function(err, status) {
+            cpr(__filename, path.join(to, 'one-file-test.js'), function(err, status) {
                 assert.equal(undefined, status);
                 assert(err instanceof Error);
                 assert.ok(/^File .* exists$/.test(err.message));

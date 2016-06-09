@@ -10,25 +10,25 @@ var assert = require('assert'),
 
 describe('cpr test suite', function() {
     this.timeout(55000);
-    
+
     describe('loading', function() {
         before(function() {
             rimraf.sync(to);
         });
-        
+
         it('should export raw method', function () {
             assert.equal(typeof cpr, 'function');
         });
-        
+
         it('should export cpr method too', function () {
             assert.equal(typeof cpr.cpr, 'function');
         });
     });
-    
+
     describe('should copy node_modules', function() {
         var out = path.join(to, '0');
         var data = {};
-        
+
         before(function(done) {
             cpr(from, out, function(err, status) {
                 data = {
@@ -38,7 +38,7 @@ describe('cpr test suite', function() {
                 done();
             });
         });
-            
+
         it('has ./out/0', function() {
             var stat = fs.statSync(out);
             assert.ok(stat.isDirectory());
@@ -63,7 +63,7 @@ describe('cpr test suite', function() {
         });
 
     });
-    
+
     describe('should NOT copy node_modules', function() {
         var out = path.join(to, '1'),
             data;
@@ -81,7 +81,7 @@ describe('cpr test suite', function() {
                 });
             });
         });
-        
+
         it('does not have ./out/1', function() {
             assert.ok(data.stat); // Should be an error
         });
@@ -89,7 +89,7 @@ describe('cpr test suite', function() {
             assert(data.err instanceof Error); // Should be an error
             assert.equal(data.err.message, 'No files to copy');
         });
-    
+
     });
 
     describe('should not copy yui-lint from regex', function() {
@@ -112,7 +112,7 @@ describe('cpr test suite', function() {
                 done();
             });
         });
-        
+
         it('returns files array with confirm', function() {
             assert.ok(Array.isArray(data.status));
             assert.ok(data.status.length > 0);
@@ -180,7 +180,7 @@ describe('cpr test suite', function() {
             });
             assert.equal(false, toHas);
         });
-    
+
     });
 
     describe('should copy minimatch from bad filter', function() {
@@ -222,7 +222,7 @@ describe('cpr test suite', function() {
             });
             assert.equal(true, toHasGFS);
         });
-    
+
     });
 
     describe('should copy node_modules with overwrite flag', function() {
@@ -270,11 +270,11 @@ describe('cpr test suite', function() {
             });
             assert.equal(true, toHasGFS);
         });
-    
+
     });
 
     describe('error handling', function() {
-    
+
         it('should fail on non-existant from dir', function(done) {
             cpr('./does/not/exist', path.join(to, 'does/not/matter'), function(err, status) {
                 assert.equal(undefined, status);
@@ -283,7 +283,7 @@ describe('cpr test suite', function() {
                 done();
             });
         });
-    
+
         it('should fail on non-file', function(done) {
             cpr('/dev/null', path.join(to, 'does/not/matter'), function(err, status) {
                 assert.equal(undefined, status);
@@ -325,7 +325,7 @@ describe('cpr test suite', function() {
     });
 
     describe('validations', function() {
-    
+
         it('should copy empty directory', function(done) {
             mkdirp.sync(path.join(to, 'empty-src'));
             cpr(path.join(to, 'empty-src'), path.join(to, 'empty-dest'), function() {
@@ -334,7 +334,7 @@ describe('cpr test suite', function() {
                 done();
             });
         });
-    
+
         it('should not delete existing folders in out dir', function(done) {
             mkdirp.sync(path.join(to, 'empty-src', 'a'));
             mkdirp.sync(path.join(to, 'empty-dest', 'b'));
@@ -347,18 +347,27 @@ describe('cpr test suite', function() {
                 done();
             });
         });
-    
+
         it('should copy one file', function(done) {
-            cpr(__filename, path.join(to, 'one-file-test/'), { overwrite: true }, function(err) {
+            cpr(__filename, path.join(to, 'one-file-test.js'), { overwrite: true }, function(err) {
                 assert.equal(undefined, err);
-                var stat = fs.statSync(path.join(to, 'one-file-test/full.js'));
+                var stat = fs.statSync(path.join(to, 'one-file-test.js'));
+                assert.ok(stat.isFile());
+                done();
+            });
+        });
+
+        it('should copy one file in dir if to has trailing sep', function(done) {
+            cpr(__filename, path.join(to, 'one-file-dir'+path.sep), { overwrite: true }, function(err) {
+                assert.equal(undefined, err);
+                var stat = fs.statSync(path.join(to, 'one-file-dir','full.js'));
                 assert.ok(stat.isFile());
                 done();
             });
         });
 
         it('should not copy because file exists', function(done) {
-            cpr(__filename, path.join(to, 'one-file-test/'), function(err, status) {
+            cpr(__filename, path.join(to, 'one-file-test.js'), function(err, status) {
                 assert.equal(undefined, status);
                 assert(err instanceof Error);
                 assert.ok(/^File .* exists$/.test(err.message));
@@ -383,7 +392,7 @@ describe('cpr test suite', function() {
               done();
             });
         });
-        
+
         it('has ./out/4', function() {
             var stat = fs.statSync(out);
             assert.ok(stat.isDirectory());
@@ -403,7 +412,7 @@ describe('cpr test suite', function() {
             });
             assert.equal(true, toHasGFS);
         });
-    
+
     });
 
 });

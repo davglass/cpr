@@ -4,16 +4,17 @@
   "author": "Dav Glass <davglass@gmail.com>",
   "version": "1.1.2",
   "dependencies": {
-    "graceful-fs": "~4.1.2",
-    "mkdirp": "~0.5.0",
-    "rimraf": "~2.4.3"
+    "graceful-fs": "^4.1.5",
+    "minimist": "^1.2.0",
+    "mkdirp": "~0.5.1",
+    "rimraf": "^2.5.4"
   },
   "main": "./lib/index.js",
   "bin": "./bin/cpr",
   "devDependencies": {
-    "istanbul": "~0.4.0",
-    "jenkins-mocha": "^2.6.0",
-    "jshint": "~2.8.0",
+    "istanbul": "~0.4.4",
+    "jenkins-mocha": "^3.0.0",
+    "jshint": "^2.9.2",
     "yui-lint": "~0.2.0"
   },
   "contributors": [

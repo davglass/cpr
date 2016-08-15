@@ -1,46 +1,29 @@
 #!/usr/bin/env node
 
-var cpr = require('../lib')
+var cpr = require('../lib');
+var fs = require('fs');
+var minimist = require('minimist');
 
-var help = false;
-var version = false;
-var dashdash = false;
-
-var args = process.argv.slice(2).filter(function (arg) {
-    if (dashdash) {
-        return !!arg;
-    } else if (arg === '--') {
-        dashdash = true;
-    } else if (arg.match(/^(-+|\/)(h(elp)?|\?)$/)) {
-        help = true;
-    } else if (arg.match(/^(-+|\/)(v(ersion)?|\?)$/)) {
-        version = true;
-    } else {
-        return !!arg;
-    }
+var argv = minimist(process.argv.slice(2), {
+    alias: { d:'delete-first', h:'help', o:'overwrite', v:'version' }
 });
 
-if (version) {
+if (argv.v) {
     console.log(require('../package.json').version);
     return;
 }
 
-if (help || args.length != 2) {
-    // If they didn't ask for help, then this is not a "success"
-    var log = help ? console.log : console.error;
-    log('Usage: cpr <source_dir> <destination_dir>');
-    log('');
-    log('  Copies files from one directory to another');
-    log('');
-    log('Options:');
-    log('');
-    log('  -h, --help            Display this usage info');
-    process.exit(help ? 0 : 1);
+if (argv.h) {
+    fs.createReadStream(__dirname + '/usage.txt').pipe(process.stdout);
+    return;
 }
 
-cpr(args[0], args[1], function (err) {
+cpr(argv._[0], argv._[1], {
+    deleteFirst: argv.d,
+    overwrite: argv.o
+}, function (err) {
     if (err) {
-        console.error("Error: " + err.message);
+        console.error('Error: ' + err.message);
         process.exit(1);
     }
 });

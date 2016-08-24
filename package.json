@@ -12,6 +12,7 @@
   "main": "./lib/index.js",
   "bin": "./bin/cpr",
   "devDependencies": {
+    "github-changes": "^1.0.4",
     "istanbul": "~0.4.4",
     "jenkins-mocha": "^3.0.0",
     "jshint": "^2.9.2",
@@ -38,7 +39,8 @@
     "pretest": "jshint --config ./node_modules/yui-lint/jshint.json ./lib/",
     "windows-test": "jenkins-mocha ./tests/full.js",
     "test": "jenkins-mocha ./tests/full.js",
-    "posttest": "istanbul check-coverage"
+    "posttest": "istanbul check-coverage",
+    "changes": "github-changes -o davglass -r cpr"
   },
   "bugs": {
     "url": "http://github.com/davglass/cpr/issues"

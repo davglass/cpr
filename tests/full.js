@@ -183,7 +183,7 @@ describe('cpr test suite', function() {
 
     });
 
-    describe('should copy minimatch from bad filter', function() {
+    describe('should copy shelljs from bad filter', function() {
         var out = path.join(to, '4'),
             data;
 
@@ -210,17 +210,17 @@ describe('cpr test suite', function() {
         it('dirs are not equal', function() {
             assert.deepEqual(data.dirs.to, data.dirs.from);
         });
-        it('from directory has minimatch dir', function() {
-            var fromHasGFS = data.dirs.from.some(function(item) {
-                return (item === 'minimatch');
+        it('from directory has shelljs dir', function() {
+            var fromHas = data.dirs.from.some(function(item) {
+                return (item === 'shelljs');
             });
-            assert.equal(true, fromHasGFS);
+            assert.equal(true, fromHas);
         });
-        it('to directory does have minimatch dir', function() {
-            var toHasGFS = data.dirs.to.some(function(item) {
-                return (item === 'minimatch');
+        it('to directory does have shelljs dir', function() {
+            var toHas = data.dirs.to.some(function(item) {
+                return (item === 'shelljs');
             });
-            assert.equal(true, toHasGFS);
+            assert.equal(true, toHas);
         });
 
     });

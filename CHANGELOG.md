@@ -1,5 +1,11 @@
 ## Change Log
 
+### v2.0.2 (2016/12/21 18:14 +00:00)
+- [3fa3af0](https://github.com/davglass/cpr/commit/3fa3af02572fe5a42fdf35ed879e3040fd209409) 2.0.2 (@davglass)
+- [#36](https://github.com/davglass/cpr/pull/36) Merge pull request #36 from benelliott/master (@benelliott)
+- [0443d51](https://github.com/davglass/cpr/commit/0443d511e92ee19a7d389e19d8f684f0ccb60c32) Include CLI documentation in README.md, update usage.txt to reflect CLI filter option (@benelliott)
+- [14233bf](https://github.com/davglass/cpr/commit/14233bf74563aa90f7c1b5fe8094717aededaf72) Added changelog [skip ci] (@davglass)
+
 ### v2.0.1 (2016/12/19 15:47 +00:00)
 - [4225fc6](https://github.com/davglass/cpr/commit/4225fc6ce0a62b8301ee881b9b2ff677246e8096) 2.0.1 (@davglass)
 - [f05f162](https://github.com/davglass/cpr/commit/f05f16298eb7467eb3b741c1f62af95e3519f779) added contrib (@davglass)

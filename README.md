@@ -1,11 +1,7 @@
 CPR (cp -R)
 ===========
 
-There are other modules out there that attempt this,
-but none did it the way I needed it to be done or
-they had issues and the author failed to fix them in a
-timely manner.
-
+There are other modules out there that attempt this, but none did it the way I needed it to be done or they had issues and the author failed to fix them in a timely manner.
 
 Install
 -------
@@ -65,5 +61,21 @@ CLI
 
 `cpr` can also be used from the command line which is useful for cross platform support.
 
+Usage:
+
+```
+cpr <source> <destination> [options]
+```
+Copies files from `source` to `destination`.
+
+Options:
+
+* `-d`, `--delete-first`:             Delete the destination directory before copying.
+* `-f <regex>`, `--filter <regex>`:   Filter out any items that match `<regex>`, a case-insensitive regex pattern.
+* `-h`, `--help`:                     Display this usage info.
+* `-o`, `--overwrite`:                Overwrite the destination exists if it exists.
+* `-v`, `--version`:                  Display the cpr version.
+
+Note that the CLI's `filter` option is simpler than the original NodeJS API, only accepting case-insensitive regular expression patterns and not functions.
 
 ![cpr](../master/cpr.jpg?raw=true)

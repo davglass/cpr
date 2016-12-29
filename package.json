@@ -10,6 +10,7 @@
     "rimraf": "^2.5.4"
   },
   "main": "./lib/index.js",
+  "typings": "./cpr.d.ts",
   "bin": "./bin/cpr",
   "devDependencies": {
     "github-changes": "^1.0.4",

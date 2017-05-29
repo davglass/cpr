@@ -1,5 +1,12 @@
 ## Change Log
 
+### v2.1.0 (2017/05/29 12:57 +00:00)
+- [#40](https://github.com/davglass/cpr/pull/40) Merge pull request #40 from oferh/cpr-typings (@oferh)
+- [55dc201](https://github.com/davglass/cpr/commit/55dc2013cd00ae9ee5d97ae34d6a2f60382a306d) typings for cpr (@oferh)
+- [#37](https://github.com/davglass/cpr/pull/37) Merge pull request #37 from davglass/tests (@davglass)
+- [b4f8c00](https://github.com/davglass/cpr/commit/b4f8c003f2bd7f92e69e40c766846966ac34c484) fixing travis build (@davglass)
+- [0f2c8b5](https://github.com/davglass/cpr/commit/0f2c8b51a33610d53f7f9604e55bea8fe6360966) changelog (@davglass)
+
 ### v2.0.2 (2016/12/21 18:14 +00:00)
 - [3fa3af0](https://github.com/davglass/cpr/commit/3fa3af02572fe5a42fdf35ed879e3040fd209409) 2.0.2 (@davglass)
 - [#36](https://github.com/davglass/cpr/pull/36) Merge pull request #36 from benelliott/master (@benelliott)

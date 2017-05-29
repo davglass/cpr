@@ -62,6 +62,10 @@ describe('cpr test suite', function() {
             assert.equal(true, toHasGFS);
         });
 
+        it('preserves file mode of copied files', function () {
+            var stat = fs.statSync(path.join(out, '.bin/mocha'));
+            assert.equal('755', (stat.mode & 0o777).toString(8));
+        });
     });
 
     describe('should NOT copy node_modules', function() {

@@ -304,6 +304,8 @@ describe('cpr test suite', function() {
                 assert.ok(errs.list);
                 assert.ok(errs.list[0]);
                 assert.ok(errs.list[0].message.match(/exists and is not a directory, can not create/));
+                assert.equal(errs.list[0].code, 'ENOTDIR');
+                assert.equal(errs.list[0].errno, 27);
                 done();
             });
         });
@@ -371,6 +373,8 @@ describe('cpr test suite', function() {
                 assert.equal(undefined, status);
                 assert(err instanceof Error);
                 assert.ok(/^File .* exists$/.test(err.message));
+                assert.equal(err.code, 'EEXIST');
+                assert.equal(err.errno, 47);
                 done();
             });
         });

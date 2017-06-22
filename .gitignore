@@ -12,3 +12,4 @@ CVS/
 .com.apple.timemachine.supported
 tests/out/
 .nyc_output
+package-lock.json

@@ -1,6 +1,12 @@
 ## Change Log
 
-### v2.1.0 (2017/05/29 12:57 +00:00)
+### v2.2.0 (2017/06/26 12:14 +00:00)
+- [cdbc530](https://github.com/davglass/cpr/commit/cdbc53008427bd291476cd547e6f8a3e73cea632) Various changes (#48) (@stevenvachon)
+- [724900c](https://github.com/davglass/cpr/commit/724900c9ae5307cba2ba250fba5d1dfb74cb9af3) changelog (@davglass)
+
+### v2.1.0 (2017/05/29 12:56 +00:00)
+- [57e7c2e](https://github.com/davglass/cpr/commit/57e7c2ecd17842e490003ab4eabe07368de24ad5) 2.1.0 (@davglass)
+- [8d3c003](https://github.com/davglass/cpr/commit/8d3c003e4658cb8c71d0f40167f96b0cc9f23f70) [fixes #44] - don't error when no callback given (@davglass)
 - [#40](https://github.com/davglass/cpr/pull/40) Merge pull request #40 from oferh/cpr-typings (@oferh)
 - [55dc201](https://github.com/davglass/cpr/commit/55dc2013cd00ae9ee5d97ae34d6a2f60382a306d) typings for cpr (@oferh)
 - [#37](https://github.com/davglass/cpr/pull/37) Merge pull request #37 from davglass/tests (@davglass)

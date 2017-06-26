@@ -16,7 +16,7 @@
     "github-changes": "^1.0.4",
     "jenkins-mocha": "^4.0.0",
     "jshint": "^2.9.2",
-    "nyc": "^10.0.0",
+    "nyc": "^11.0.2",
     "yui-lint": "~0.2.0"
   },
   "contributors": [

@@ -52,8 +52,8 @@ All options default to `false`.
 Filtering
 ---------
 
-If you give it a `RegExp`, it will use that to `test` the filename as they are being gathered. If it passes, it will be removed.
-If you give it a `function`, it will use that with `Array.filter` on the list of files.
+If you give it a `RegExp`, it will use that to `test` the full absolute pathnames of the files and directories as they are being gathered. If any of them passes, it will not be copied.
+If you give it a `function`, it will use that with `Array.filter` on the list of full absolute pathnames of files and directories.
 
 
 CLI

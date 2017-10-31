@@ -1,6 +1,18 @@
 ## Change Log
 
-### v2.2.0 (2017/06/26 12:14 +00:00)
+### v3.0.0 (2017/10/31 13:08 +00:00)
+- [e3cd84b](https://github.com/davglass/cpr/commit/e3cd84b7f27a61e8c86cd14379905781e0970806) 3.0.0 (@davglass)
+- [17b0494](https://github.com/davglass/cpr/commit/17b0494af1b173a30e82e0d8c69297f4376d6cbb) Manually porting #43 (@davglass)
+- [a5a8ee4](https://github.com/davglass/cpr/commit/a5a8ee4e5ff0a5696320b5f828f39c1cd94d13dc) Fixing a race condition that can occur when a file has been read but the write buffer has not been flushed when copying a file. (#57) (@PlutoMatt)
+- [e08f362](https://github.com/davglass/cpr/commit/e08f362a89f474002f930afdbe492bf88bd529e1) Amend filtering info for more clarity. (#52) (@jrpool)
+- [b0e8f40](https://github.com/davglass/cpr/commit/b0e8f40b303d9b4fbbd2f20e2853d0617ae48b19) added node.js specific build info (@davglass)
+- [01efad1](https://github.com/davglass/cpr/commit/01efad136c554008fc529ff4f120fb863dfd1b8a) added node.js specific build info (@davglass)
+- [e2395ba](https://github.com/davglass/cpr/commit/e2395ba3846fea420e02ed043cde014a52cd614a) added appveyor build config (@davglass)
+- [4cb7ceb](https://github.com/davglass/cpr/commit/4cb7cebe41efc9e5854caf013f8c670b05cb008b) various changes (#50) (@stevenvachon)
+
+### v2.2.0 (2017/06/26 12:15 +00:00)
+- [4520872](https://github.com/davglass/cpr/commit/4520872c30bbed3bac9930ad633f4dd4e5545225) 2.2.0 (@davglass)
+- [0686492](https://github.com/davglass/cpr/commit/0686492dab8f1563172996dc1e1be5e39d0adac7) changelog (@davglass)
 - [cdbc530](https://github.com/davglass/cpr/commit/cdbc53008427bd291476cd547e6f8a3e73cea632) Various changes (#48) (@stevenvachon)
 - [724900c](https://github.com/davglass/cpr/commit/724900c9ae5307cba2ba250fba5d1dfb74cb9af3) changelog (@davglass)
 

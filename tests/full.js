@@ -28,6 +28,7 @@ describe('cpr test suite', function() {
     describe('should copy node_modules', function() {
         var out = path.join(to, '0');
         var data = {};
+        var beforeStat = fs.statSync(path.join(from, '.bin/mocha'));
 
         before(function(done) {
             cpr(from, out, function(err, status) {
@@ -64,7 +65,7 @@ describe('cpr test suite', function() {
 
         it('preserves file mode of copied files', function () {
             var stat = fs.statSync(path.join(out, '.bin/mocha'));
-            assert.equal('755', (stat.mode & 0o777).toString(8));
+            assert.equal(beforeStat.mode, stat.mode);
         });
 
     });
@@ -317,16 +318,23 @@ describe('cpr test suite', function() {
 
 
         it('should fail without write permissions', function(done) {
-            var baddir = path.join(to, 'readonly');
-            mkdirp.sync(baddir);
-            fs.chmodSync(baddir, '555');
-            cpr(from, baddir, function(errs, status) {
-                assert.ok(errs);
-                assert.ok(errs.list);
-                assert.ok(errs.list[0]);
-                assert.ok(errs.message.match(/Unable to copy directory entirely/));
-                done();
-            });
+            /*istanbul ignore next - This is for docker perms*/
+            (function() {
+                if (process.getuid && process.getuid() === 0) {
+                    console.log('Skipping this test as root has all access..');
+                    return done();
+                }
+                var baddir = path.join(to, 'readonly');
+                mkdirp.sync(baddir);
+                fs.chmodSync(baddir, '555');
+                cpr(path.join(from, '.bin'), baddir, function(errs, status) {
+                    assert.ok(errs);
+                    assert.ok(errs.list);
+                    assert.ok(errs.list[0]);
+                    assert.ok(errs.message.match(/Unable to copy directory entirely/));
+                    done();
+                });
+            })();
         });
 
     });

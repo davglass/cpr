@@ -2,11 +2,16 @@
 
 var cpr = require('../lib');
 var fs = require('fs');
-var minimist = require('minimist');
+var gar = require('gar');
 
-var argv = minimist(process.argv.slice(2), {
-    alias: { d:'delete-first', f:'filter', h:'help', o:'overwrite', v:'version' }
-});
+var argv = gar(process.argv.slice(2));
+
+var aliases = { d:'delete-first', f:'filter', h:'help', o:'overwrite', v:'version' }
+var aliasKeys = Object.keys(aliases)
+
+for (var i = 0; i < aliasKeys.length; i++) {
+    if (argv.hasOwnProperty(aliases[aliasKeys[i]])) argv[aliasKeys[i]] = argv[aliases[aliasKeys[i]]]
+}
 
 if (argv.v) {
     console.log(require('../package.json').version);

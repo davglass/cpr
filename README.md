@@ -12,7 +12,8 @@ Install
 Build Status
 ------------
 
-[![Build Status](https://secure.travis-ci.org/davglass/cpr.png)](http://travis-ci.org/davglass/cpr)
+[![Linux Build](https://img.shields.io/travis/davglass/cpr.svg?label=linux)](https://travis-ci.org/davglass/cpr)
+[![Windows Build](https://img.shields.io/appveyor/ci/davglass/cpr.svg?label=windows)](https://ci.appveyor.com/project/davglass/cpr)
 
 Usage
 -----

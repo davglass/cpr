@@ -74,6 +74,7 @@ Options:
 * `-f <regex>`, `--filter <regex>`:   Filter out any items that match `<regex>`, a case-insensitive regex pattern.
 * `-h`, `--help`:                     Display this usage info.
 * `-o`, `--overwrite`:                Overwrite the destination exists if it exists.
+* `-c`, `--confirm`:                  After the copy operation, stat all the files and report errors if any are missing.
 * `-v`, `--version`:                  Display the cpr version.
 
 Note that the CLI's `filter` option is simpler than the original NodeJS API, only accepting case-insensitive regular expression patterns and not functions.

@@ -5,7 +5,7 @@ var fs = require('fs');
 var minimist = require('minimist');
 
 var argv = minimist(process.argv.slice(2), {
-    alias: { d:'delete-first', f:'filter', h:'help', o:'overwrite', v:'version' }
+    alias: { d:'delete-first', f:'filter', h:'help', o:'overwrite', c:'confirm', v:'version' }
 });
 
 if (argv.v) {
@@ -27,7 +27,8 @@ if (argv.f) {
 cpr(argv._[0], argv._[1], {
     deleteFirst: argv.d,
     filter: filter,
-    overwrite: argv.o
+    overwrite: argv.o,
+    confirm: argv.c
 }, function (err) {
     if (err) {
         console.error('Error: ' + err.message);
